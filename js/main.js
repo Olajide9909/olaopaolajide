@@ -1,0 +1,145 @@
+(() => {
+  const D = window.PORTFOLIO, $ = s => document.querySelector(s);
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  // Smooth scrolling
+  if (window.Lenis && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const lenis = window.__lenis = new Lenis({ lerp: 0.09 });
+    const raf = t => { lenis.raf(t); requestAnimationFrame(raf); }; requestAnimationFrame(raf);
+    document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
+      const id = a.getAttribute('href'); if (id.length > 1 && $(id)) { e.preventDefault(); lenis.scrollTo(id, { offset: -60 }); }
+    }));
+  }
+
+  // Folders
+  const fwrap = $('#folders');
+  D.folders.forEach((f, i) => {
+    const el = document.createElement('button');
+    el.className = 'folder reveal'; el.style.setProperty('--c', f.color);
+    const thumbs = f.items.filter(x => x.type !== 'link').slice(0, 3).map(x =>
+      `<span style="background-image:url('${x.type === 'video' ? `https://i.ytimg.com/vi/${x.id}/mqdefault.jpg` : x.poster || x.thumb || x.src}')"></span>`).join('');
+    el.innerHTML = `<div class="f-back"></div><div class="f-papers">${thumbs || '<span></span><span></span>'}</div>
+      <div class="f-front"><small>${String(i + 1).padStart(2, '0')} · ${f.tag}</small><strong>${f.title}</strong><em>${f.items.length} item${f.items.length > 1 ? 's' : ''} →</em></div>`;
+    el.addEventListener('click', () => openFolder(f));
+    fwrap.appendChild(el);
+  });
+
+  // External link cards: icon + source + title, styled per link type
+  const ICON = {
+    album: '<path d="M4 5h16v14H4z"/><path d="M4 16l5-5 4 4 3-3 4 4"/><circle cx="15.5" cy="9" r="1.5"/>',
+    drive: '<path d="M3 7h6l2 2h10v10H3z"/>',
+    video: '<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9l5 3-5 3z"/>',
+    article: '<path d="M6 3h9l4 4v14H6z"/><path d="M9 11h7M9 15h7M9 7h4"/>',
+    link: '<path d="M10 14a4 4 0 0 0 6 0l3-3a4 4 0 0 0-6-6l-1 1"/><path d="M14 10a4 4 0 0 0-6 0l-3 3a4 4 0 0 0 6 6l1-1"/>'
+  };
+  function linkCard(x) {
+    const h = x.href;
+    const [kind, src] = /photos\.app\.goo\.gl|photos\.google/.test(h) ? ['album', 'Google Photos album']
+      : /drive\.google/.test(h) ? ['drive', 'Google Drive folder']
+      : /facebook\.com/.test(h) ? ['video', 'Facebook video']
+      : /thenationonlineng/.test(h) ? ['article', 'The Nation · Article']
+      : /linktr\.ee/.test(h) ? ['link', 'Linktree']
+      : /tiktok\.com/.test(h) ? ['video', 'TikTok video'] : /instagram\.com|x\.com/.test(h) ? ['link', 'Social page'] : /canva\.site/.test(h) ? ['album', 'Canva portfolio'] : /github\.com/.test(h) ? ['link', 'GitHub'] : /vercel\.app|netlify\.app/.test(h) ? ['link', 'Live site'] : ['link', 'External link'];
+    const label = x.label.replace(/^The Nation: |^Full album: | \((Facebook|Google Photos)\)$/g, '');
+    return `<a class="g-item linkcard lk-${kind}" href="${h}" target="_blank" rel="noopener">
+      <span class="lk-ico"><svg viewBox="0 0 24 24" aria-hidden="true">${ICON[kind]}</svg></span>
+      <span class="lk-src">${src}</span><strong>${label}</strong><span class="lk-go">Open <i>↗</i></span></a>`;
+  }
+
+  // Modal
+  const modal = $('#modal'), body = $('#modal-body');
+  function openFolder(f) {
+    $('#modal-tag').textContent = f.tag; $('#modal-title').textContent = f.title; $('#modal-desc').textContent = f.desc;
+    modal.style.setProperty('--c', f.color);
+    body.innerHTML = f.items.map(x => x.type === 'video'
+      ? `<div class="g-item vid" data-id="${x.id}"><img loading="lazy" src="https://i.ytimg.com/vi/${x.id}/hqdefault.jpg" alt="Video thumbnail"><span class="play">▶</span></div>`
+      : x.type === 'mp4' ? `<div class="g-item wide"><video src="${x.src}" poster="${x.poster}" controls preload="none" playsinline></video></div>`
+      : x.type === 'pdf' ? `<a class="g-item cert" href="${x.src}" target="_blank" rel="noopener"><img loading="lazy" src="${x.thumb}" alt="${x.cap}"><span>${x.cap}</span></a>`
+      : x.type === 'site' ? `<a class="g-item site" href="${x.href}" target="_blank" rel="noopener"><img loading="lazy" src="${x.thumb}" alt="${x.title}"><span class="site-meta"><b>${x.title}</b><small>${x.cap}</small><em>${x.href.replace(/^https?:\/\//, '').replace(/\/$/, '')} ↗</em></span></a>`
+      : x.type === 'image' ? `<a class="g-item" href="${x.src}" target="_blank" rel="noopener"><img loading="lazy" src="${x.src}" alt="${x.cap}"><span class="cap">${x.cap}</span></a>`
+      : linkCard(x)).join('');
+    body.querySelectorAll('.vid').forEach(v => v.addEventListener('click', () => {
+      v.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${v.dataset.id}?autoplay=1" allow="autoplay; encrypted-media; fullscreen" allowfullscreen title="Video"></iframe>`;
+    }));
+    modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false'); document.body.style.overflow = 'hidden';
+    anime({ targets: '.modal-inner', opacity: [0, 1], translateY: [60, 0], rotateX: [-12, 0], duration: 700, easing: 'easeOutExpo' });
+    anime({ targets: '.g-item', opacity: [0, 1], scale: [0.85, 1], delay: anime.stagger(50, { start: 200 }), easing: 'easeOutBack' });
+    $('#close').focus();
+  }
+  document.querySelectorAll('[data-open]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); openFolder(D.folders.find(f => f.key === a.dataset.open)); }));
+  function close() { body.querySelectorAll('video').forEach(v => v.pause()); modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true'); body.innerHTML = ''; document.body.style.overflow = ''; }
+  $('#close').onclick = close; modal.onclick = e => { if (e.target === modal) close(); };
+  addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+
+  // Timeline + tools
+  // Experience: tabs on one side, detail panel that flips in on the other
+  const tabs = $('#xp-tabs'), panel = $('#xp-panel');
+  tabs.innerHTML = D.experience.map(([d, r, o], i) =>
+    `<button role="tab" aria-selected="${i === 0}" data-i="${i}"><span>${String(i + 1).padStart(2, '0')}</span><b>${o}</b><small>${d}</small></button>`).join('');
+  function showXp(i) {
+    const [d, r, o, t, tags = []] = D.experience[i];
+    tabs.querySelectorAll('button').forEach(b => b.setAttribute('aria-selected', b.dataset.i == i));
+    panel.innerHTML = `<p class="eyebrow">${d}</p><h3>${r}</h3><p class="org">${o}</p><p>${t}</p><div class="chips">${tags.map(x => `<span>${x}</span>`).join('')}</div><div class="xp-num">${String(i + 1).padStart(2, '0')}</div>`;
+    anime({ targets: panel, opacity: [0, 1], rotateY: [-14, 0], translateX: [30, 0], duration: 650, easing: 'easeOutExpo' });
+    anime({ targets: panel.querySelectorAll('.chips span'), opacity: [0, 1], translateY: [10, 0], delay: anime.stagger(50, { start: 150 }) });
+  }
+  tabs.addEventListener('click', e => { const b = e.target.closest('button'); if (b) showXp(+b.dataset.i); });
+  showXp(0);
+
+  // Back-to-top button
+  const top = $('#totop');
+  addEventListener('scroll', () => top.classList.toggle('show', scrollY > innerHeight * 0.8), { passive: true });
+  top.onclick = () => window.__lenis ? window.__lenis.scrollTo(0) : scrollTo({ top: 0, behavior: 'smooth' });
+  const tl = D.tools.map(t => `<span>${t}</span>`).join(''); $('#tools').innerHTML = tl + tl;
+
+  // Rotating role text
+  let ri = 0; const role = $('#role');
+  setInterval(() => {
+    anime({ targets: role, opacity: [1, 0], translateY: [0, -14], duration: 300, easing: 'easeInQuad', complete: () => {
+      role.textContent = D.roles[++ri % D.roles.length];
+      anime({ targets: role, opacity: [0, 1], translateY: [14, 0], duration: 400, easing: 'easeOutQuad' });
+    } });
+  }, 2400);
+
+  // Intro
+  anime.timeline({ easing: 'easeOutExpo' })
+    .add({ targets: '#loader span', scale: [0.6, 1], opacity: [0, 1], duration: 600 })
+    .add({ targets: '#loader', opacity: 0, duration: 500, complete: () => $('#loader').remove() })
+    .add({ targets: '.hero-title .line', translateY: ['110%', 0], opacity: [0, 1], delay: anime.stagger(120), duration: 1100 }, '-=200')
+    .add({ targets: '.hero-text > *:not(.hero-title), .nav', opacity: [0, 1], translateY: [20, 0], delay: anime.stagger(70), duration: 800 }, '-=800')
+    .add({ targets: '.hero-visual', opacity: [0, 1], scale: [0.7, 1], rotate: [-8, 0], duration: 1400 }, '-=1200')
+    ;
+
+  // Active link in nav
+  const links = [...document.querySelectorAll('#navlinks a')];
+  const spy = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + e.target.id)); }), { rootMargin: '-45% 0px -50% 0px' });
+  ['about', 'work', 'experience', 'contact'].forEach(id => spy.observe(document.getElementById(id)));
+
+  // Scroll reveal + counters
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return; io.unobserve(e.target);
+    anime({ targets: e.target, opacity: [0, 1], translateY: [50, 0], rotateX: [8, 0], duration: 1000, easing: 'easeOutExpo' });
+    e.target.querySelectorAll('[data-count]').forEach(b => {
+      const o = { v: 0 }; anime({ targets: o, v: +b.dataset.count, round: 1, duration: 2000, easing: 'easeOutExpo', update: () => b.textContent = o.v.toLocaleString() });
+    });
+  }), { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // 3D tilt on portrait and folders
+  document.querySelectorAll('.tilt, .folder').forEach(el => {
+    el.addEventListener('pointermove', e => {
+      const r = el.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+      el.style.transform = `perspective(900px) rotateY(${x * 14}deg) rotateX(${-y * 14}deg)`;
+    });
+    el.addEventListener('pointerleave', () => anime({ targets: el, rotateX: 0, rotateY: 0, duration: 600, easing: 'easeOutElastic(1,.6)', complete: () => el.style.transform = '' }));
+  });
+  // Skill bars slide in one after another
+  const sb = document.querySelector('.skillbars');
+  if (sb) { sb.querySelectorAll('li').forEach(l => l.style.opacity = 0);
+    new IntersectionObserver((es, o) => es.forEach(e => { if (!e.isIntersecting) return; o.disconnect();
+      anime({ targets: sb.querySelectorAll('li'), opacity: [0, 1], translateX: [-60, 0], delay: anime.stagger(110, { start: 250 }), duration: 900, easing: 'easeOutExpo' });
+    }), { threshold: 0.4 }).observe(sb); }
+
+  // Hero role chips pop in after the intro
+  anime({ targets: '.chip', opacity: [0, 1], scale: [0.6, 1], delay: anime.stagger(140, { start: 1600 }), duration: 700, easing: 'easeOutBack' });
+})();
