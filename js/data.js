@@ -19,7 +19,7 @@ window.PORTFOLIO = {
         img('assets/img/citibim/one-skill.jpg', 'CitiBIM: educational post'),
         img('assets/img/citibim/tsunami-carousel.jpg', 'CitiBIM: Tsunami Awareness Day carousel'),
         img('assets/img/citibim/office-visit.jpg', 'CitiBIM: office visit carousel'),
-        drive('1nVy5pLwgk1INi9PCk9FTZYtZI1lQSy3O', 'Strategy, audits & plans (CitiBIM, Unikke Furniture and more)'),
+        drive('1nVy5pLwgk1INi9PCk9FTZYtZI1lQSy3O', 'Strategy, audits & plans (CitiBIM, Unikke Furniture, plus one-off work for Tukio Konsult and Robovolt)'),
         drive('1-PtmfcC4EwO4nHi-TUHY0UtzrN--W7YB', 'Content calendars (CitiBIM, Engold, Unikke, Seraphmedia)'),
         drive('1eS0syj_JTWei5Mkug7Lsts8zYvHCMCvx', 'Performance reports'),
         site('smm', 'https://olaopa-smm.vercel.app', 'Social media portfolio', 'Campaigns, calendars and results'),
