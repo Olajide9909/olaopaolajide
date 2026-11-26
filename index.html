@@ -36,9 +36,7 @@
 
 <header class="nav" id="nav">
   <a href="#home" class="logo">Olaopa<span>.</span></a>
-  <nav id="navlinks">
-    <a href="#home" class="active">Home</a><a href="#about">About me</a><a href="#why">Why me</a><a href="#work">Projects</a><a href="#github">GitHub</a><a href="#contact">Contact</a>
-  </nav>
+  <nav id="navlinks"><a href="#home" class="active">Home</a><a href="#work">Projects</a><a href="#about" data-tab="about">About me</a><a href="#why" data-tab="why">Why me</a><a href="#github" data-tab="github">GitHub</a><a href="#contact" data-tab="contact">Contact</a></nav>
   <a href="mailto:olaopa.olajide@gmail.com" class="nav-cta">Hire me ↗</a>
 </header>
 
@@ -66,43 +64,72 @@
     </ul>
   </section>
 
-  <section id="about" class="about">
-    <figure class="photo reveal">
+  
+
+  
+
+  <section id="work" class="work">
+    <div class="head reveal">
+      <h2 class="h">Projects <span class="arr">↘</span></h2>
+      <p>Nine folders, one for each thing I do. Open one to see the work inside.</p>
+    </div>
+    <div class="folders" id="folders"></div>
+  </section>
+
+  
+
+  
+
+  
+
+  
+
+  <section id="desk" class="desk">
+    <div class="win reveal">
+      <div class="win-bar">
+        <span class="lights"><i></i><i></i><i></i></span>
+        <div class="win-tabs" role="tablist">
+          <button data-tab="about" class="on">about-me.txt</button><button data-tab="why">why-me.md</button><button data-tab="experience">experience.log</button><button data-tab="github">github</button><button data-tab="contact">contact</button>
+        </div>
+      </div>
+      <div class="win-body">
+        <div class="pane on" id="about" data-pane="about"><div class="about">
+    <figure class="photo">
       <img src="assets/img/me.jpg" alt="Olaopa Olajide Michael">
       <figcaption><span>Olaopa Olajide Michael</span><small>Ibadan, Nigeria · works remotely</small></figcaption>
     </figure>
-    <div class="about-text reveal">
+    <div class="about-text">
       <h2 class="h">About me <span class="arr">↘</span></h2>
       <p>I'm a social media manager with 5+ years of experience who also builds websites, LMS platforms and AI automations. At <b>CitiBIM</b> I lead social media and ran the BIM 2025 course launch with paid ads. At <b>Spirit Life School of Ministry</b> my Make.com and Supabase workflows send emails in under 30 seconds and save a projected ₦3.8M a year.</p>
       <p>I trained as a Quantity Surveyor (HND, Distinction) and in technical project management, so I plan in sprints, track against KPIs and report clearly. Through <b>Inscribe Hub</b> I've trained 40+ people in digital and AI skills.</p>
       <h3 class="h small">Tools <span class="arr">↘</span></h3>
       <ul class="rings" id="rings"></ul>
+      <h3 class="h small">Worked with <span class="arr">↘</span></h3>
+      <p class="clients"><span>CitiBIM Nigeria</span><span>Spirit Life School of Ministry</span><span>Primelle Hub</span><span>Unikke Furniture</span><span>Tukio Konsult</span><span>Robovolt</span><span>Engold Consulting</span><span>Digital Process Innovations</span><span>Dayspring Seraphic Church</span><span>Cherubs Cove Ministry</span><span>Seraphmedia</span></p>
     </div>
-  </section>
-
-  <section id="why" class="why">
-    <h2 class="h reveal">Why me <span class="arr">↘</span></h2>
+  </div></div>
+        <div class="pane" id="why" data-pane="why"><h2 class="h">Why me <span class="arr">↘</span></h2>
+    <h2 class="h">Why me <span class="arr">↘</span></h2>
     <div class="why-grid">
-      <article class="reveal"><h3>Experience</h3><p>5+ years running social media for brands, churches and training companies across 9+ platforms, including paid ads on Meta, TikTok, YouTube and X.</p></article>
-      <article class="reveal"><h3>Builder mindset</h3><p>I don't stop at content. I build the landing page, the LMS and the automation that sends the emails, with React, Supabase, Make and n8n.</p></article>
-      <article class="reveal"><h3>Measured results</h3><p>+15% engagement on the BIM 2025 launch, ~30% growth at Seraphmedia, emails in under 30 seconds and 0% errors on 50+ receipts a month.</p></article>
+      <article ><h3>Experience</h3><p>5+ years running social media for brands, churches and training companies across 9+ platforms, including paid ads on Meta, TikTok, YouTube and X.</p></article>
+      <article ><h3>Builder mindset</h3><p>I don't stop at content. I build the landing page, the LMS and the automation that sends the emails, with React, Supabase, Make and n8n.</p></article>
+      <article ><h3>Measured results</h3><p>+15% engagement on the BIM 2025 launch, ~30% growth at Seraphmedia, emails in under 30 seconds and 0% errors on 50+ receipts a month.</p></article>
     </div>
-  </section>
-
-  <section id="work" class="work">
-    <div class="head reveal">
-      <h2 class="h">Projects <span class="arr">↘</span></h2>
-      <p>Eight folders, one for each thing I do. Open one to see the work inside.</p>
-    </div>
-    <div class="folders" id="folders"></div>
-  </section>
-
-  <section id="github" class="github">
-    <div class="head reveal">
-      <h2 class="h">GitHub <span class="arr">↘</span></h2>
+  <div class="edu">
+    <div class="card"><p class="lbl">Education</p><h3>HND Quantity Surveying, Distinction</h3><p>Rufus Giwa Polytechnic, Owo · NYSC completed 2024</p></div>
+    <div class="card"><p class="lbl">Leadership</p><h3>COO, founder &amp; trainer</h3><p>Primelle Hub · Seraphmedia · Inscribe Hub · NYSC CDS Group President</p></div>
+    <div class="card"><p class="lbl">Credentials</p><h3>10 certificates</h3><p><a href="#" data-open="certs">HubSpot, MTF, Asana, ALX and more ↗</a></p></div>
+  </div></div>
+        <div class="pane" id="experience" data-pane="experience"><h2 class="h">Experience <span class="arr">↘</span></h2>
+    <div class="head"><h2 class="h">Experience <span class="arr">↘</span></h2></div>
+    <div class="xp"><div class="xp-tabs" id="xp-tabs" role="tablist"></div><article class="xp-panel" id="xp-panel" role="tabpanel"></article></div>
+  </div>
+        <div class="pane" id="github" data-pane="github"><h2 class="h">GitHub <span class="arr">↘</span></h2>
+    <div class="head">
+      
       <p>Most client code lives in private or organisation repos. Here's what I've built, what it runs on and where it's live.</p>
     </div>
-    <div class="gh-top reveal">
+    <div class="gh-top">
       <a class="gh-profile" id="gh-profile" href="https://github.com/Olajide9909" target="_blank" rel="noopener">
         <img id="gh-avatar" src="assets/img/me.jpg" alt="">
         <div><b>Olaopa Olajide</b><span class="mono">@Olajide9909</span><small id="gh-stats">GitHub profile</small></div>
@@ -111,20 +138,8 @@
       <figure class="gh-chart"><img src="https://ghchart.rshah.org/ff7a1a/Olajide9909" alt="GitHub contribution chart for Olajide9909" loading="lazy"><figcaption class="mono">contributions · last 12 months</figcaption></figure>
     </div>
     <div class="repos" id="repos"></div>
-  </section>
-
-  <section id="experience" class="experience">
-    <div class="head reveal"><h2 class="h">Experience <span class="arr">↘</span></h2></div>
-    <div class="xp reveal"><div class="xp-tabs" id="xp-tabs" role="tablist"></div><article class="xp-panel" id="xp-panel" role="tabpanel"></article></div>
-  </section>
-
-  <section class="edu">
-    <div class="card reveal"><p class="lbl">Education</p><h3>HND Quantity Surveying, Distinction</h3><p>Rufus Giwa Polytechnic, Owo · NYSC completed 2024</p></div>
-    <div class="card reveal"><p class="lbl">Leadership</p><h3>COO, founder &amp; trainer</h3><p>Primelle Hub · Seraphmedia · Inscribe Hub · NYSC CDS Group President</p></div>
-    <div class="card reveal"><p class="lbl">Credentials</p><h3>10 certificates</h3><p><a href="#" data-open="certs">HubSpot, MTF, Asana, ALX and more ↗</a></p></div>
-  </section>
-
-  <section id="contact" class="contact reveal">
+  </div>
+        <div class="pane" id="contact" data-pane="contact"><div class="contact">
     <p class="lbl">Contact</p>
     <h2>Let's work<br>together <span class="arr">↘</span></h2>
     <a class="mail" href="mailto:olaopa.olajide@gmail.com">olaopa.olajide@gmail.com</a>
@@ -134,6 +149,9 @@
       <a href="https://github.com/Olajide9909" target="_blank" rel="noopener">GitHub ↗</a>
       <a href="https://theinscribehub.vercel.app" target="_blank" rel="noopener">Inscribe Hub ↗</a>
       <a href="https://linktr.ee/Seraphmediachannel" target="_blank" rel="noopener">Seraphmedia ↗</a>
+    </div>
+  </div></div>
+      </div>
     </div>
   </section>
 </main>

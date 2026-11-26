@@ -2,6 +2,8 @@
 const img = (src, cap) => ({ type: 'image', src, cap });
 const link = (href, label) => ({ type: 'link', href, label });
 const site = (slug, href, title, cap) => ({ type: 'site', thumb: `assets/img/sites/${slug}.jpg`, href, title, cap });
+const reel = (n, cap) => ({ type: 'reel', src: `assets/video/${n}.mp4`, poster: `assets/img/citibim/${n}-poster.jpg`, cap });
+const drive = (id, label) => link(`https://drive.google.com/drive/folders/${id}`, label);
 const cert = (f, cap) => ({ type: 'image', src: `assets/img/certs/${f}.jpg`, cap });
 
 window.PORTFOLIO = {
@@ -9,8 +11,17 @@ window.PORTFOLIO = {
   folders: [
     {
       key: 'smm', title: 'Social Media Management', tag: 'Strategy & campaigns', color: '#ff6a3d',
-      desc: 'Strategy, content pillars, calendars, paid ads (Meta, TikTok, YouTube, X) and monthly reporting. Led the CitiBIM BIM 2025 launch across 5 stakeholders (+15% engagement) and grew Seraphmedia ~30% across 9+ platforms.',
+      desc: 'Strategy, content pillars, calendars, paid ads (Meta, TikTok, YouTube, X) and monthly reporting. Led the CitiBIM BIM 2025 launch (+15% engagement). October 2026 at CitiBIM: LinkedIn reactions +61% (379 → 610), comments 4 → 38, Instagram interactions +84%.',
       items: [
+        img('assets/img/citibim/m400-launch.jpg', 'CitiBIM: DJI Matrice 400 launch poster'),
+        img('assets/img/citibim/enrol-2026.jpg', 'CitiBIM: 2026 BIM courses enrolment'),
+        img('assets/img/citibim/drone-course.jpg', 'CitiBIM: drone mapping course flyer'),
+        img('assets/img/citibim/one-skill.jpg', 'CitiBIM: educational post'),
+        img('assets/img/citibim/tsunami-carousel.jpg', 'CitiBIM: Tsunami Awareness Day carousel'),
+        img('assets/img/citibim/office-visit.jpg', 'CitiBIM: office visit carousel'),
+        drive('1nVy5pLwgk1INi9PCk9FTZYtZI1lQSy3O', 'Strategy, audits & plans (CitiBIM, Unikke Furniture, Tukio Konsult, Robovolt)'),
+        drive('1-PtmfcC4EwO4nHi-TUHY0UtzrN--W7YB', 'Content calendars (CitiBIM, Engold, Unikke, Seraphmedia)'),
+        drive('1eS0syj_JTWei5Mkug7Lsts8zYvHCMCvx', 'Performance reports'),
         site('smm', 'https://olaopa-smm.vercel.app', 'Social media portfolio', 'Campaigns, calendars and results'),
         link('https://instagram.com/citibim', 'CitiBIM Nigeria on Instagram'),
         link('https://x.com/CitibimNG', 'CitiBIM Nigeria on X'),
@@ -25,7 +36,7 @@ window.PORTFOLIO = {
       items: [
         site('seraphmedia', 'https://seraphmedia.com.ng', 'Seraph Media: C&S Digital Library', 'Sermons, hymnary, books, live stream and community'),
         site('spiritlifesom', 'https://spiritlifesom.org', 'Spirit Life School of Ministry', 'Website + LMS serving 56+ students'),
-        site('citibimlms', 'https://citibimlms.vercel.app', 'CitiBIM Learning Platform', 'LMS for CitiBIM trainings'),
+        site('citibimlms', 'https://learn.citibim.com', 'CitiBIM Learning Platform', 'learn.citibim.com: LMS for CitiBIM trainings'),
         site('citibimtlp', 'https://citibimtlp.vercel.app', 'CitiBIM Trainings landing page', '6 courses, pricing, WhatsApp CTA, FAQ'),
         site('cherubscove', 'https://cherubscove.net', 'Cherubs Cove Ministry', 'Events, gallery and conference registration'),
         site('abidemi', 'https://abidemiakinsehinwa.vercel.app', 'Abidemi Akinsehinwa', 'Client portfolio for a brand manager'),
@@ -47,6 +58,13 @@ window.PORTFOLIO = {
       ]
     },
     {
+      key: 'design', title: 'Graphic Design', tag: 'Flyers · logos · brands', color: '#ff8fd0',
+      desc: 'Flyers, logos and brand designs for churches, ministries, small businesses and events, made in Canva and Photoshop.',
+      items: [1, 2, 3, 4, 5, 6, 7, 8].map(n => img(`assets/img/designs/logo-0${n}.jpg`, 'Logo design'))
+        .concat(Array.from({ length: 16 }, (_, i) => img(`assets/img/designs/flyer-${String(i + 1).padStart(2, '0')}.jpg`, 'Flyer design')))
+        .concat([drive('1tpz2OeUeIYtIw1URmE5aYX0_WvbJ1dRw', 'All graphics, carousels & logos'), drive('1EDCO1Kdt3lRCVpXohsEYZVf_AxgfOpg7', 'Church & ministry media'), link('https://olaopaolajide.my.canva.site', 'Canva portfolio')])
+    },
+    {
       key: 'pm', title: 'Project Management', tag: 'Agile · Scrum', color: '#7c5cff',
       desc: 'Scrum Master / PM for the SLSOM Digital Learning Platform (3 releases shipped, 11 governance documents, 30 user stories), COO at Primelle Hub, and campaigns run as projects. HND Quantity Surveying (Distinction) and 4 MTF project management certificates.',
       items: [
@@ -60,7 +78,12 @@ window.PORTFOLIO = {
       key: 'video', title: 'Video & Creative', tag: 'Reels · design · livestream', color: '#ffc23d',
       desc: '50+ short-form videos (Premiere Pro, CapCut), 100+ graphics, AI video with Google Flow, Seedance and Higgsfield, and livestreams of major church events with OBS.',
       items: [
-        link('https://olaopaolajide.my.canva.site', 'Graphics & video portfolio'),
+        reel('bim-explainer', 'CitiBIM: BIM explainer reel'),
+        reel('drone-highway', 'CitiBIM: drone highway reel'),
+        reel('masterclass-highlight', 'CitiBIM: masterclass highlight'),
+        reel('citibim-labubu-trend', 'CitiBIM: trend remake'),
+        reel('citibim-trend-remake', 'CitiBIM: trend remake'),
+        drive('1V_fF2N4-JDZfAPaFjAkzT41DcAyGeZ-W', 'All videos & reels (CitiBIM, Seraph Media, Skinpop and more)'),
         link('https://www.tiktok.com/@seraphmediasm/video/7433759616737021189', 'TikTok: Seraphmedia reel 1'),
         link('https://www.tiktok.com/@seraphmediasm/video/7433477531333840134', 'TikTok: Seraphmedia reel 2'),
         link('https://www.tiktok.com/@seraphmediasm/video/7428518564757245189', 'TikTok: Seraphmedia reel 3'),
@@ -76,7 +99,8 @@ window.PORTFOLIO = {
         site('inscribehub', 'https://theinscribehub.vercel.app', 'Inscribe Hub', 'Brand, websites and skills for professionals and ministries'),
         site('instructedva', 'https://instructedva.vercel.app', 'VA & Digital Literacy Masterclass', '4 weeks live: Zapier/Make, ChatGPT, Notion, Upwork'),
         site('instructedsmm', 'https://instructedsmm.vercel.app', 'SMM & AI Digital Literacy Masterclass', 'Brand strategy, Reels/TikTok, prompting, automation'),
-        site('istcert', 'https://istcert.vercel.app', 'Certificate Portal', 'Students generate their own certificates')
+        site('istcert', 'https://istcert.vercel.app', 'Certificate Portal', 'Students generate their own certificates'),
+        drive('1h5mvbJ7jbQU1GNUHUru1okw1Jz4l2-yo', 'Course outlines, guides and the COYEP AI automation talk')
       ]
     },
     {

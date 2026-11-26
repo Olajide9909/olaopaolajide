@@ -7,9 +7,25 @@
     const lenis = window.__lenis = new Lenis({ lerp: 0.09 });
     const raf = t => { lenis.raf(t); requestAnimationFrame(raf); }; requestAnimationFrame(raf);
     document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
-      const id = a.getAttribute('href'); if (id.length > 1 && $(id)) { e.preventDefault(); lenis.scrollTo(id, { offset: -60 }); }
+      const id = a.getAttribute('href'); if (id.length > 1 && $(id)) { e.preventDefault(); const pane = a.dataset.tab || ($(id).closest('.pane') && $(id).closest('.pane').dataset.pane); if (pane) { showTab(pane); lenis.scrollTo('#desk', { offset: -70 }); } else lenis.scrollTo(id, { offset: -60 }); }
     }));
   }
+
+  // Desk window tabs
+  function showTab(name) {
+    document.querySelectorAll('.win-tabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === name));
+    document.querySelectorAll('.pane').forEach(p => p.classList.toggle('on', p.dataset.pane === name));
+    document.querySelectorAll('#navlinks a').forEach(l => l.classList.toggle('active', l.dataset.tab === name));
+    const body = document.querySelector('.win-body'); if (body) body.scrollTop = 0;
+    const pane = document.querySelector(`.pane[data-pane="${name}"]`);
+    if (name === 'about') animateRings();
+  }
+  window.showTab = showTab;
+  document.querySelectorAll('.win-tabs button').forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
+  if (!window.Lenis) document.querySelectorAll('a[data-tab]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); showTab(a.dataset.tab); $('#desk').scrollIntoView({ behavior: 'smooth' }); }));
+  let ringsDone = false;
+  function animateRings() { if (ringsDone) return; ringsDone = true;
+    document.querySelectorAll('.ring').forEach((r, i) => { const o = { p: 0 }; anime({ targets: o, p: +r.parentElement.style.getPropertyValue('--v'), duration: 1400, delay: i * 80, easing: 'easeOutExpo', update: () => r.style.setProperty('--p', o.p) }); }); }
 
   // Folders
   const fwrap = $('#folders');
@@ -53,6 +69,7 @@
     modal.style.setProperty('--c', f.color);
     body.innerHTML = f.items.map(x => x.type === 'video'
       ? `<div class="g-item vid" data-id="${x.id}"><img loading="lazy" src="https://i.ytimg.com/vi/${x.id}/hqdefault.jpg" alt="Video thumbnail"><span class="play">▶</span></div>`
+      : x.type === 'reel' ? `<div class="g-item reel"><video src="${x.src}" poster="${x.poster}" controls preload="none" playsinline></video><span class="cap">${x.cap}</span></div>`
       : x.type === 'mp4' ? `<div class="g-item wide"><video src="${x.src}" poster="${x.poster}" controls preload="none" playsinline></video></div>`
       : x.type === 'pdf' ? `<a class="g-item cert" href="${x.src}" target="_blank" rel="noopener"><img loading="lazy" src="${x.thumb}" alt="${x.cap}"><span>${x.cap}</span></a>`
       : x.type === 'site' ? `<a class="g-item site" href="${x.href}" target="_blank" rel="noopener"><img loading="lazy" src="${x.thumb}" alt="${x.title}"><span class="site-meta"><b>${x.title}</b><small>${x.cap}</small><em>${x.href.replace(/^https?:\/\//, '').replace(/\/$/, '')} ↗</em></span></a>`
@@ -62,8 +79,7 @@
       v.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${v.dataset.id}?autoplay=1" allow="autoplay; encrypted-media; fullscreen" allowfullscreen title="Video"></iframe>`;
     }));
     modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false'); document.body.style.overflow = 'hidden';
-    anime({ targets: '.modal-inner', opacity: [0, 1], translateY: [60, 0], rotateX: [-12, 0], duration: 700, easing: 'easeOutExpo' });
-    anime({ targets: '.g-item', opacity: [0, 1], scale: [0.85, 1], delay: anime.stagger(50, { start: 200 }), easing: 'easeOutBack' });
+    body.querySelectorAll('.g-item').forEach((g, i) => g.style.setProperty('--i', i));
     $('#close').focus();
   }
   document.querySelectorAll('[data-open]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); openFolder(D.folders.find(f => f.key === a.dataset.open)); }));
@@ -131,18 +147,19 @@
   // Active link in nav
   const links = [...document.querySelectorAll('#navlinks a')];
   const spy = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + e.target.id)); }), { rootMargin: '-45% 0px -50% 0px' });
-  ['home', 'about', 'why', 'work', 'github', 'experience', 'contact'].forEach(id => spy.observe(document.getElementById(id)));
+  ['home', 'work'].forEach(id => spy.observe(document.getElementById(id)));
+  new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { const t = document.querySelector('.win-tabs button.on'); links.forEach(l => l.classList.toggle('active', !!t && l.dataset.tab === t.dataset.tab)); } }), { rootMargin: '-45% 0px -50% 0px' }).observe(document.getElementById('desk'));
 
   // Scroll reveal
   const io = new IntersectionObserver(es => es.forEach(e => {
     if (!e.isIntersecting) return; io.unobserve(e.target);
     e.target.classList.add('in');
-    e.target.querySelectorAll('.ring').forEach((r, i) => { const o = { p: 0 }; anime({ targets: o, p: +r.parentElement.style.getPropertyValue('--v'), duration: 1400, delay: i * 80, easing: 'easeOutExpo', update: () => r.style.setProperty('--p', o.p) }); });
+    if (e.target.querySelector('.pane.on .ring')) animateRings();
   }), { threshold: 0.12 });
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
   // Tilt on folders and photo
-  document.querySelectorAll('.folder, .photo').forEach(el => {
+  document.querySelectorAll('.folder').forEach(el => {
     el.addEventListener('pointermove', e => {
       const r = el.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
       el.style.transform = `perspective(900px) rotateY(${x * 10}deg) rotateX(${-y * 10}deg)`;
