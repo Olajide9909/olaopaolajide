@@ -247,3 +247,6 @@ footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;max-wid
 .res p{color:#c4c4ca;font-size:.88rem;line-height:1.5}
 .res a,.res span{margin-top:auto;font:500 .72rem 'JetBrains Mono',monospace;color:var(--mute);text-decoration:none}
 .res a:hover{color:var(--acc)}
+
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.nojs{max-width:900px;margin:0 auto;padding:40px 6vw}.nojs li{margin:8px 0}
