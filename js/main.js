@@ -72,6 +72,7 @@
       : x.type === 'reel' ? `<div class="g-item reel"><video src="${x.src}" poster="${x.poster}" controls preload="none" playsinline></video><span class="cap">${x.cap}</span></div>`
       : x.type === 'mp4' ? `<div class="g-item wide"><video src="${x.src}" poster="${x.poster}" controls preload="none" playsinline></video></div>`
       : x.type === 'pdf' ? `<a class="g-item cert" href="${x.src}" target="_blank" rel="noopener"><img loading="lazy" src="${x.thumb}" alt="${x.cap}"><span>${x.cap}</span></a>`
+      : x.type === 'doc' ? `<a class="g-item site doc" href="${x.href}" target="_blank" rel="noopener"><img loading="lazy" src="${x.thumb}" alt="${x.title}"><span class="site-meta"><b>${x.title}</b><small>${x.cap}</small><em>${x.kind === 'presentation' ? 'Google Slides' : 'Google Doc'} ↗</em></span></a>`
       : x.type === 'site' ? `<a class="g-item site" href="${x.href}" target="_blank" rel="noopener"><img loading="lazy" src="${x.thumb}" alt="${x.title}"><span class="site-meta"><b>${x.title}</b><small>${x.cap}</small><em>${x.href.replace(/^https?:\/\//, '').replace(/\/$/, '')} ↗</em></span></a>`
       : x.type === 'image' ? `<a class="g-item" href="${x.src}" target="_blank" rel="noopener"><img loading="lazy" src="${x.src}" alt="${x.cap}"><span class="cap">${x.cap}</span></a>`
       : linkCard(x)).join('');

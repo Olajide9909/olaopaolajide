@@ -238,3 +238,12 @@ footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;max-wid
 .modal.open .modal-inner{animation:popIn .6s cubic-bezier(.2,.8,.2,1) both}
 .gallery .g-item{opacity:1;animation:itemIn .5s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0) * 40ms + 150ms)}
 .pane.on{animation:popIn .45s cubic-bezier(.2,.8,.2,1) both}
+
+.g-item.doc img{aspect-ratio:4/3;object-fit:cover;object-position:top;background:#fff}
+
+.results{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.res{display:flex;flex-direction:column;gap:8px;padding:18px;border-radius:14px;background:var(--card);border:1px solid var(--line)}
+.res b{font:700 2rem 'Inter Tight';letter-spacing:-.03em;color:var(--acc)}
+.res p{color:#c4c4ca;font-size:.88rem;line-height:1.5}
+.res a,.res span{margin-top:auto;font:500 .72rem 'JetBrains Mono',monospace;color:var(--mute);text-decoration:none}
+.res a:hover{color:var(--acc)}
