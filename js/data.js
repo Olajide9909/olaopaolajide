@@ -114,3 +114,19 @@ window.PORTFOLIO = {
   ],
   tools: ['Meta Business Suite', 'Canva', 'Photoshop', 'Premiere Pro', 'CapCut', 'OBS Studio', 'Make.com', 'n8n', 'Zapier', 'Supabase', 'React', 'Vercel', 'Cursor', 'Lovable', 'Claude', 'Asana', 'Trello', 'ClickUp', 'Jira', 'Notion', 'Google Analytics', 'Google Flow', 'Higgsfield']
 };
+
+// Tools shown as rings in About (label, short mark, level 0-100)
+window.PORTFOLIO.rings = [['Meta Ads', 'Ads', 90], ['Canva', 'Cv', 95], ['Premiere Pro', 'Pr', 80], ['Make.com', 'Mk', 90], ['n8n', 'n8n', 80], ['React', 'Re', 75], ['Supabase', 'Sb', 75], ['Asana', 'As', 90]];
+
+// GitHub: projects with their stack. private = repo is private or belongs to a client organisation.
+window.PORTFOLIO.github = [
+  { name: 'seraphmediaapp', desc: 'C&S Digital Library: sermons, hymnary, books, live stream and community.', stack: ['React', 'TypeScript', 'Supabase', 'Tailwind', 'Playwright'], live: 'https://seraphmedia.com.ng', private: true },
+  { name: 'spiritlifesom', desc: 'Spirit Life School of Ministry website and LMS for 56+ students.', stack: ['React', 'TypeScript', 'Supabase', 'Tailwind'], live: 'https://spiritlifesom.org', private: true },
+  { name: 'certify-me', desc: 'Inscribe Hub certificate portal: students generate their own certificates.', stack: ['TanStack Start', 'React', 'Supabase', 'Tailwind'], live: 'https://istcert.vercel.app', private: true },
+  { name: 'theinscribehub', desc: 'Inscribe Hub: brand, services, packages and academy.', stack: ['React', 'TypeScript', 'Tailwind', 'Playwright'], live: 'https://theinscribehub.vercel.app', private: true },
+  { name: 'tisbuilder', desc: 'Web builder portfolio listing 11+ shipped projects.', stack: ['React', 'TypeScript', 'Tailwind'], live: 'https://tisbuilder.vercel.app', private: true },
+  { name: 'instructedva', desc: 'VA & Digital Literacy Masterclass landing page.', stack: ['React', 'TypeScript', 'Tailwind'], live: 'https://instructedva.vercel.app', private: true },
+  { name: 'instructedsmm', desc: 'SMM & AI Digital Literacy Masterclass landing page.', stack: ['React', 'TypeScript', 'Tailwind'], live: 'https://instructedsmm.vercel.app', private: true },
+  { name: 'spiritlife-web-app', desc: 'Engaged Singles attendance tracker for Spirit Life church.', stack: ['Vite', 'Tailwind'], live: 'https://spiritlife-engaged-singles.vercel.app', private: true },
+  { name: 'adedayo-portfolio', desc: '3D portfolio for a video editor and cinematographer.', stack: ['three.js', 'anime.js', 'JavaScript'], live: 'https://adelumola.netlify.app', repo: 'https://github.com/Olajide9909/adedayo-portfolio' }
+];

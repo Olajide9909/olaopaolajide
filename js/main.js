@@ -18,8 +18,8 @@
     el.className = 'folder reveal'; el.style.setProperty('--c', f.color);
     const thumbs = f.items.filter(x => x.type !== 'link').slice(0, 3).map(x =>
       `<span style="background-image:url('${x.type === 'video' ? `https://i.ytimg.com/vi/${x.id}/mqdefault.jpg` : x.poster || x.thumb || x.src}')"></span>`).join('');
-    el.innerHTML = `<div class="f-back"></div><div class="f-papers">${thumbs || '<span></span><span></span>'}</div>
-      <div class="f-front"><small>${String(i + 1).padStart(2, '0')} · ${f.tag}</small><strong>${f.title}</strong><em>${f.items.length} item${f.items.length > 1 ? 's' : ''} →</em></div>`;
+    el.innerHTML = `<div class="f-tab"><span>${String(i + 1).padStart(2, '0')}</span></div><div class="f-papers">${thumbs || '<span></span><span></span>'}</div>
+      <div class="f-front"><small>${f.tag}</small><strong>${f.title}</strong><em>${f.items.length} item${f.items.length > 1 ? 's' : ''} <b>↘</b></em></div>`;
     el.addEventListener('click', () => openFolder(f));
     fwrap.appendChild(el);
   });
@@ -79,7 +79,7 @@
   function showXp(i) {
     const [d, r, o, t, tags = []] = D.experience[i];
     tabs.querySelectorAll('button').forEach(b => b.setAttribute('aria-selected', b.dataset.i == i));
-    panel.innerHTML = `<p class="eyebrow">${d}</p><h3>${r}</h3><p class="org">${o}</p><p>${t}</p><div class="chips">${tags.map(x => `<span>${x}</span>`).join('')}</div><div class="xp-num">${String(i + 1).padStart(2, '0')}</div>`;
+    panel.innerHTML = `<p class="lbl">${d}</p><h3>${r}</h3><p class="org">${o}</p><p>${t}</p><div class="chips">${tags.map(x => `<span>${x}</span>`).join('')}</div><div class="xp-num">${String(i + 1).padStart(2, '0')}</div>`;
     anime({ targets: panel, opacity: [0, 1], rotateY: [-14, 0], translateX: [30, 0], duration: 650, easing: 'easeOutExpo' });
     anime({ targets: panel.querySelectorAll('.chips span'), opacity: [0, 1], translateY: [10, 0], delay: anime.stagger(50, { start: 150 }) });
   }
@@ -90,56 +90,63 @@
   const top = $('#totop');
   addEventListener('scroll', () => top.classList.toggle('show', scrollY > innerHeight * 0.8), { passive: true });
   top.onclick = () => window.__lenis ? window.__lenis.scrollTo(0) : scrollTo({ top: 0, behavior: 'smooth' });
-  const tl = D.tools.map(t => `<span>${t}</span>`).join(''); $('#tools').innerHTML = tl + tl;
 
-  // Rotating role text
-  let ri = 0; const role = $('#role');
-  setInterval(() => {
-    anime({ targets: role, opacity: [1, 0], translateY: [0, -14], duration: 300, easing: 'easeInQuad', complete: () => {
-      role.textContent = D.roles[++ri % D.roles.length];
-      anime({ targets: role, opacity: [0, 1], translateY: [14, 0], duration: 400, easing: 'easeOutQuad' });
-    } });
-  }, 2400);
+  // Tool rings
+  $('#rings').innerHTML = D.rings.map(([n, m, v]) => `<li style="--v:${v}"><span class="ring"><b>${m}</b></span><small>${n}</small></li>`).join('');
+
+  // GitHub: curated projects + live profile numbers + any public repos not listed yet
+  const repoCard = r => `<article class="repo reveal">
+      <header><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.71 1.71.75.75 0 0 1-1.07 1.06A2.49 2.49 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.71A2.49 2.49 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h3.5a.25.25 0 0 1 .25.25v3.25a.25.25 0 0 1-.4.2l-1.45-1.09a.25.25 0 0 0-.3 0L5.4 15.7a.25.25 0 0 1-.4-.2Z"/></svg>
+      <b class="mono">${r.name}</b><span class="vis">${r.private ? 'Private' : 'Public'}</span></header>
+      <p>${r.desc}</p>
+      <div class="stack">${r.stack.map(x => `<span>${x}</span>`).join('')}</div>
+      <footer>${r.live ? `<a href="${r.live}" target="_blank" rel="noopener">Live site ↗</a>` : ''}${r.repo ? `<a href="${r.repo}" target="_blank" rel="noopener">Code ↗</a>` : ''}</footer></article>`;
+  const repos = $('#repos'); repos.innerHTML = D.github.map(repoCard).join('');
+  fetch('https://api.github.com/users/Olajide9909').then(r => r.ok ? r.json() : null).then(u => {
+    if (!u) return; $('#gh-avatar').src = u.avatar_url;
+    $('#gh-stats').textContent = `${u.public_repos} public repos · ${u.followers} followers · joined ${new Date(u.created_at).getFullYear()}`;
+  }).catch(() => {});
+  fetch('https://api.github.com/users/Olajide9909/repos?per_page=100&sort=pushed').then(r => r.ok ? r.json() : []).then(list => {
+    const known = new Set(D.github.map(g => g.name));
+    list.filter(r => !r.fork && !known.has(r.name)).forEach(r => {
+      repos.insertAdjacentHTML('beforeend', repoCard({ name: r.name, desc: r.description || 'Public repository', stack: [r.language || 'Code'], live: r.homepage, repo: r.html_url }));
+      io.observe(repos.lastElementChild);
+    });
+  }).catch(() => {});
 
   // Intro
   anime.timeline({ easing: 'easeOutExpo' })
-    .add({ targets: '#loader span', scale: [0.6, 1], opacity: [0, 1], duration: 600 })
+    .add({ targets: '#loader span', translateY: ['100%', 0], opacity: [0, 1], duration: 700 })
     .add({ targets: '#loader', opacity: 0, duration: 500, complete: () => $('#loader').remove() })
-    .add({ targets: '.hero-title .line', translateY: ['110%', 0], opacity: [0, 1], delay: anime.stagger(120), duration: 1100 }, '-=200')
-    .add({ targets: '.hero-text > *:not(.hero-title), .nav', opacity: [0, 1], translateY: [20, 0], delay: anime.stagger(70), duration: 800 }, '-=800')
-    .add({ targets: '.hero-visual', opacity: [0, 1], scale: [0.7, 1], rotate: [-8, 0], duration: 1400 }, '-=1200')
-    ;
+    .add({ targets: '.hero-title .line', translateY: ['105%', 0], opacity: [0, 1], delay: anime.stagger(120), duration: 1100 }, '-=200')
+    .add({ targets: '.hero-text > *:not(.hero-title), .nav, .ticker li', opacity: [0, 1], translateY: [20, 0], delay: anime.stagger(60), duration: 800 }, '-=800')
+    .add({ targets: '.hero-visual span', opacity: [0, 1], duration: 900 }, '-=600');
+
+  // Safety net: never leave the loader up or the hero hidden
+  setTimeout(() => {
+    $('#loader')?.remove();
+    document.querySelectorAll('.hero-text > *, .nav, .ticker li, .hero-visual span, .hero-title .line').forEach(el => { if (+getComputedStyle(el).opacity < 0.5) { el.style.opacity = 1; el.style.transform = 'none'; } });
+  }, 3200);
 
   // Active link in nav
   const links = [...document.querySelectorAll('#navlinks a')];
   const spy = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + e.target.id)); }), { rootMargin: '-45% 0px -50% 0px' });
-  ['about', 'work', 'experience', 'contact'].forEach(id => spy.observe(document.getElementById(id)));
+  ['home', 'about', 'why', 'work', 'github', 'experience', 'contact'].forEach(id => spy.observe(document.getElementById(id)));
 
-  // Scroll reveal + counters
+  // Scroll reveal
   const io = new IntersectionObserver(es => es.forEach(e => {
     if (!e.isIntersecting) return; io.unobserve(e.target);
-    anime({ targets: e.target, opacity: [0, 1], translateY: [50, 0], rotateX: [8, 0], duration: 1000, easing: 'easeOutExpo' });
-    e.target.querySelectorAll('[data-count]').forEach(b => {
-      const o = { v: 0 }; anime({ targets: o, v: +b.dataset.count, round: 1, duration: 2000, easing: 'easeOutExpo', update: () => b.textContent = o.v.toLocaleString() });
-    });
-  }), { threshold: 0.15 });
+    e.target.classList.add('in');
+    e.target.querySelectorAll('.ring').forEach((r, i) => { const o = { p: 0 }; anime({ targets: o, p: +r.parentElement.style.getPropertyValue('--v'), duration: 1400, delay: i * 80, easing: 'easeOutExpo', update: () => r.style.setProperty('--p', o.p) }); });
+  }), { threshold: 0.12 });
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-  // 3D tilt on portrait and folders
-  document.querySelectorAll('.tilt, .folder').forEach(el => {
+  // Tilt on folders and photo
+  document.querySelectorAll('.folder, .photo').forEach(el => {
     el.addEventListener('pointermove', e => {
       const r = el.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
-      el.style.transform = `perspective(900px) rotateY(${x * 14}deg) rotateX(${-y * 14}deg)`;
+      el.style.transform = `perspective(900px) rotateY(${x * 10}deg) rotateX(${-y * 10}deg)`;
     });
     el.addEventListener('pointerleave', () => anime({ targets: el, rotateX: 0, rotateY: 0, duration: 600, easing: 'easeOutElastic(1,.6)', complete: () => el.style.transform = '' }));
   });
-  // Skill bars slide in one after another
-  const sb = document.querySelector('.skillbars');
-  if (sb) { sb.querySelectorAll('li').forEach(l => l.style.opacity = 0);
-    new IntersectionObserver((es, o) => es.forEach(e => { if (!e.isIntersecting) return; o.disconnect();
-      anime({ targets: sb.querySelectorAll('li'), opacity: [0, 1], translateX: [-60, 0], delay: anime.stagger(110, { start: 250 }), duration: 900, easing: 'easeOutExpo' });
-    }), { threshold: 0.4 }).observe(sb); }
-
-  // Hero role chips pop in after the intro
-  anime({ targets: '.chip', opacity: [0, 1], scale: [0.6, 1], delay: anime.stagger(140, { start: 1600 }), duration: 700, easing: 'easeOutBack' });
 })();
