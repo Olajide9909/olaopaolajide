@@ -2,8 +2,11 @@
   const D = window.PORTFOLIO, $ = s => document.querySelector(s);
   document.getElementById('yr').textContent = new Date().getFullYear();
 
-  // Smooth scrolling
-  if (window.Lenis && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  // Phones: one plain scrolling page (no tab window, no smooth-scroll library, a Menu button)
+  const small = matchMedia('(max-width: 760px)').matches;
+
+  // Smooth scrolling (desktop only; phones keep native scrolling)
+  if (window.Lenis && !small && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
     const lenis = window.__lenis = new Lenis({ lerp: 0.09 });
     const raf = t => { lenis.raf(t); requestAnimationFrame(raf); }; requestAnimationFrame(raf);
     document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
@@ -22,7 +25,15 @@
   }
   window.showTab = showTab;
   document.querySelectorAll('.win-tabs button').forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
-  if (!window.Lenis) document.querySelectorAll('a[data-tab]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); showTab(a.dataset.tab); $('#desk').scrollIntoView({ behavior: 'smooth' }); }));
+  if (!window.__lenis) document.querySelectorAll('a[data-tab]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); showTab(a.dataset.tab); (small ? document.getElementById(a.dataset.tab) : $('#desk')).scrollIntoView({ behavior: 'smooth' }); }));
+
+  // Menu button (phones)
+  const mb = $('#menubtn');
+  const setMenu = o => { document.body.classList.toggle('menu-open', o); mb.setAttribute('aria-expanded', o); mb.textContent = o ? 'Close' : 'Menu'; };
+  mb.addEventListener('click', () => setMenu(!document.body.classList.contains('menu-open')));
+  document.querySelectorAll('#navlinks a').forEach(a => a.addEventListener('click', () => setMenu(false)));
+  document.addEventListener('click', e => { if (document.body.classList.contains('menu-open') && !e.target.closest('.nav')) setMenu(false); });
+  addEventListener('keydown', e => { if (e.key === 'Escape') setMenu(false); });
   let ringsDone = false;
   function animateRings() { if (ringsDone) return; ringsDone = true;
     document.querySelectorAll('.ring').forEach((r, i) => { const o = { p: 0 }; anime({ targets: o, p: +r.parentElement.style.getPropertyValue('--v'), duration: 1400, delay: i * 80, easing: 'easeOutExpo', update: () => r.style.setProperty('--p', o.p) }); }); }
@@ -134,7 +145,7 @@
   // Intro
   anime.timeline({ easing: 'easeOutExpo' })
     .add({ targets: '#loader span', translateY: ['100%', 0], opacity: [0, 1], duration: 700 })
-    .add({ targets: '#loader', opacity: 0, duration: 500, complete: () => $('#loader').remove() })
+    .add({ targets: '#loader', opacity: 0, duration: 500, complete: () => $('#loader')?.remove() })
     .add({ targets: '.hero-title .line', translateY: ['105%', 0], opacity: [0, 1], delay: anime.stagger(120), duration: 1100 }, '-=200')
     .add({ targets: '.hero-text > *:not(.hero-title), .nav, .ticker li', opacity: [0, 1], translateY: [20, 0], delay: anime.stagger(60), duration: 800 }, '-=800')
     .add({ targets: '.hero-visual span', opacity: [0, 1], duration: 900 }, '-=600');

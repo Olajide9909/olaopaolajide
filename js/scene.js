@@ -1,7 +1,10 @@
-import * as THREE from 'three';
-
 // Hero: a graphite 3D folder with project screenshots inside. It follows the cursor
 // and opens a little more as you scroll.
+// Phones get a plain, fast hero instead: three.js is never downloaded below 761px.
+if (matchMedia('(max-width: 760px)').matches) document.getElementById('bg')?.remove();
+else start(await import('three'));
+
+function start(THREE) {
 const canvas = document.getElementById('bg');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
@@ -105,9 +108,11 @@ function tick() {
   folder.rotation.y += ((mouse.x * 0.7 - 0.35) - folder.rotation.y) * 0.05;
   folder.rotation.x += ((mouse.y * 0.4 + 0.12) - folder.rotation.x) * 0.05;
   folder.position.set(base.x, base.y + Math.sin(t * 0.9) * 0.08 + sp * 2.4, 0);
-  canvas.style.opacity = String(Math.max(0, 1 - sp * (innerWidth < 760 ? 2.6 : 1.2)));
-  renderer.render(scene, camera);
+  const op = Math.max(0, 1 - sp * 1.2);
+  canvas.style.opacity = String(op);
+  if (op > 0) renderer.render(scene, camera); // skip GPU work once the hero has scrolled away
   if (!reduce) requestAnimationFrame(tick);
 }
 tick();
 if (reduce) addEventListener('scroll', () => requestAnimationFrame(tick));
+}
