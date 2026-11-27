@@ -105,7 +105,7 @@ function tick() {
   folder.rotation.y += ((mouse.x * 0.7 - 0.35) - folder.rotation.y) * 0.05;
   folder.rotation.x += ((mouse.y * 0.4 + 0.12) - folder.rotation.x) * 0.05;
   folder.position.set(base.x, base.y + Math.sin(t * 0.9) * 0.08 + sp * 2.4, 0);
-  canvas.style.opacity = String(Math.max(0, 1 - sp * 1.2));
+  canvas.style.opacity = String(Math.max(0, 1 - sp * (innerWidth < 760 ? 2.6 : 1.2)));
   renderer.render(scene, camera);
   if (!reduce) requestAnimationFrame(tick);
 }
